@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "modid",
+  "version": "${version}",
+
+  "name": "Pet Transfer",
+  "description": "A mod that lets you create "contracts" that transfer ownership of pets and other tameables.",
+  "authors": [
+    "Emirikol"
+  ],
+  "contact": {
+    "homepage": "CURSEFORGE TODO",
+    "sources": "https://github.com/emirik0l/pet-transfer"
+  },
+
+  "license": "LGPL2.1",
+  "icon": "assets/transfer/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.emirikol.transfer.PetTransfer"
+    ]
+  },
+  "mixins": [],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.18.x",
+    "java": ">=17"
+  },
+  "suggests": {}
+}
