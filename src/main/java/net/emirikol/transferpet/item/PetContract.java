@@ -26,7 +26,7 @@ public class PetContract extends Item {
             if (entity instanceof TameableEntity && this.getPet(stack).equals(entity.getUuid())) {
                 //If it does, check that the pet's owner and current user are not the same person.
                 TameableEntity tameableEntity = (TameableEntity) entity;
-                if (tameableEntity.getOwner() != null && tameableEntity.getOwner().getUuid() != user.getUuid()) {
+                if (tameableEntity.getOwnerUuid() != user.getUuid()) {
                     //If they're not, perform the transfer of ownership.
                     this.transferOwnership(user, (TameableEntity) entity);
                     stack.decrement(1);
