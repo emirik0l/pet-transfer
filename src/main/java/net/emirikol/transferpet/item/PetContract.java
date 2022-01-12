@@ -3,6 +3,7 @@ package net.emirikol.transferpet.item;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -39,10 +40,14 @@ public class PetContract extends Item {
     }
 
     public void fillContract(ItemStack stack, PlayerEntity player, TameableEntity entity) {
-        NbtCompound nbt = stack.getOrCreateNbt();
+        ItemStack filled = new ItemStack(this, 1);
+        stack.decrement(1);
+        NbtCompound nbt = filled.getOrCreateNbt();
         nbt.putInt("CustomModelData", 1);
         nbt.putString("contract_owner", player.getUuidAsString());
         nbt.putString("contact_pet", entity.getUuidAsString());
+        PlayerInventory inventory = player.getInventory();
+        inventory.offerOrDrop(filled);
     }
 
     public boolean isContractFilled(ItemStack stack) {
