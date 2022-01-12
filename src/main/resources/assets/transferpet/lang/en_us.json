@@ -1,3 +1,4 @@
 {
-  "item.transferpet.contract": "Blank Contract"
+  "item.transferpet.contract": "Blank Contract",
+  "text.transferpet.contract_fail": "You can't fill out a contract for this creature!"
 }
