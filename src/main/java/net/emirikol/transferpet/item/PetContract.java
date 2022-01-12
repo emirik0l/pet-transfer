@@ -22,8 +22,25 @@ public class PetContract extends Item {
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
         //Check if contract is filled.
         if (this.isContractFilled(stack)) {
-            return super.useOnEntity(stack, user, entity, hand);
-            //TODO
+            //If the contract is filled, check if the target matches the contract.
+            if (entity instanceof TameableEntity && this.getPet(stack) == entity.getUuid()) {
+                //If it does, check that the pet's owner and current user are not the same person.
+                TameableEntity tameableEntity = (TameableEntity) entity;
+                if (tameableEntity.getOwner() != null && tameableEntity.getOwner().getUuid() != user.getUuid()) {
+                    //If they're not, perform the transfer of ownership.
+                    this.transferOwnership(user, (TameableEntity) entity);
+                    stack.decrement(1);
+                    return ActionResult.SUCCESS;
+                } else {
+                    //If they are, inform the player of their mistake.
+                    if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.same_owner"), true); }
+                    return ActionResult.PASS;
+                }
+            } else {
+                //If it doesn't, inform the player of their mistake.
+                if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.wrong_pet"), true); }
+                return ActionResult.PASS;
+            }
         } else {
             //If contract is not filled, check if target is owned by the player.
             if (entity instanceof TameableEntity && ((TameableEntity) entity).getOwner() == user) {
@@ -36,7 +53,6 @@ public class PetContract extends Item {
                 return ActionResult.PASS;
             }
         }
-
     }
 
     public void fillContract(ItemStack stack, PlayerEntity player, TameableEntity entity) {
@@ -44,19 +60,17 @@ public class PetContract extends Item {
         stack.decrement(1);
         NbtCompound nbt = filled.getOrCreateNbt();
         nbt.putInt("CustomModelData", 1);
-        nbt.putString("contract_owner", player.getUuidAsString());
-        nbt.putString("contact_pet", entity.getUuidAsString());
+        nbt.putString("contract_pet", entity.getUuidAsString());
         PlayerInventory inventory = player.getInventory();
         inventory.offerOrDrop(filled);
     }
 
-    public boolean isContractFilled(ItemStack stack) {
-        return stack.getOrCreateNbt().getString("contract_owner").length() > 0;
+    public void transferOwnership(PlayerEntity player, TameableEntity entity) {
+        entity.setOwner(player);
     }
 
-    public UUID getOwner(ItemStack stack) {
-        NbtCompound nbt = stack.getOrCreateNbt();
-        return UUID.fromString(nbt.getString("contract_owner"));
+    public boolean isContractFilled(ItemStack stack) {
+        return !stack.getOrCreateNbt().getString("contract_pet").isEmpty();
     }
 
     public UUID getPet(ItemStack stack) {
