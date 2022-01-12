@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.emirikol.transferpet.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "AnimalEntityMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
