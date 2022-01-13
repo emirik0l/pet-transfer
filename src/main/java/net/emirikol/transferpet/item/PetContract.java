@@ -51,6 +51,7 @@ public class PetContract extends Item {
             //Check that the pet does not already belong to the user.
             if (this.isTargetOwned(user, entity)) {
                 if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.same_owner"), true); }
+                return ActionResult.SUCCESS;
             }
             //Check if the target matches the contract.
             if (isContractValid(stack, entity)) {
