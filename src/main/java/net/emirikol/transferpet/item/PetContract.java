@@ -58,7 +58,7 @@ public class PetContract extends Item {
                 //If it does, perform the transfer of ownership.
                 this.transferOwnership(user, (TameableEntity) entity);
                 stack.decrement(1);
-                entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.0F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
+                entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.5F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
             } else {
                 //If it doesn't, inform the player of their mistake.
                 if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.contract_invalid"), true); }
@@ -68,7 +68,7 @@ public class PetContract extends Item {
             if (this.isTargetOwned(user, entity)) {
                 //If the target is owned by the player, fill the contract.
                 this.fillContract(stack, user, (TameableEntity) entity);
-                entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.0F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
+                entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.5F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
             } else {
                 //If the target is not owned by the player, inform them of their mistake.
                 if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.contract_fail"), true); }
@@ -106,6 +106,8 @@ public class PetContract extends Item {
     }
 
     public boolean isContractValid(ItemStack stack, LivingEntity entity) {
+        //Contracts are valid if the UUID of the entity matches the UUID of the contract.
+        //The owner UUID in the contract must also match the current owner UUID of the entity (outdated contracts are invalid).
         if (!(entity instanceof TameableEntity)) return false;
         TameableEntity tameableEntity = (TameableEntity) entity;
         return (tameableEntity.getUuid().equals(this.getPet(stack))) && (tameableEntity.getOwnerUuid().equals(this.getOwner(stack)));
