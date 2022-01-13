@@ -1,5 +1,6 @@
 package net.emirikol.transferpet.item;
 
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,11 +10,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.world.World;
 
+import java.util.List;
 import java.util.UUID;
 
 public class PetContract extends Item {
@@ -27,6 +31,16 @@ public class PetContract extends Item {
             return new TranslatableText("item.transferpet.filled_contract");
         } else {
             return super.getName(stack);
+        }
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
+        if (this.isContractFilled(stack)) {
+            Text petText = new TranslatableText("text.transferpet.tooltip_pet").append(this.getPetName(stack));
+            tooltip.add(petText);
+            Text ownerText = new TranslatableText("text.transferpet.tooltip_owner").append(this.getOwnerName(stack));
+            tooltip.add(ownerText);
         }
     }
 
@@ -74,7 +88,10 @@ public class PetContract extends Item {
         stack.decrement(1);
         NbtCompound nbt = filled.getOrCreateNbt();
         nbt.putInt("CustomModelData", 1);
-        nbt.putString("contract_pet", entity.getUuidAsString());
+        nbt.putString("contract_uuid", entity.getUuidAsString());
+        nbt.putString("contract_name", entity.getDisplayName().getString());
+        nbt.putString("contract_owner_uuid", player.getUuidAsString());
+        nbt.putString("contract_owner_name", player.getDisplayName().getString());
         PlayerInventory inventory = player.getInventory();
         inventory.offerOrDrop(filled);
     }
@@ -84,12 +101,22 @@ public class PetContract extends Item {
     }
 
     public boolean isContractFilled(ItemStack stack) {
-        return !stack.getOrCreateNbt().getString("contract_pet").isEmpty();
+        return !stack.getOrCreateNbt().getString("contract_uuid").isEmpty();
     }
 
     public UUID getPet(ItemStack stack) {
         NbtCompound nbt = stack.getOrCreateNbt();
-        return UUID.fromString(nbt.getString("contract_pet"));
+        return UUID.fromString(nbt.getString("contract_uuid"));
+    }
+
+    public String getPetName(ItemStack stack) {
+        NbtCompound nbt = stack.getOrCreateNbt();
+        return nbt.getString("contract_name");
+    }
+
+    public String getOwnerName(ItemStack stack) {
+        NbtCompound nbt = stack.getOrCreateNbt();
+        return nbt.getString("contract_owner_name");
     }
 }
 
