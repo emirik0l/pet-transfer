@@ -51,7 +51,6 @@ public class PetContract extends Item {
             //Check that the pet does not already belong to the user.
             if (this.isTargetOwned(user, entity)) {
                 if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.same_owner"), true); }
-                return ActionResult.PASS;
             }
             //Check if the target matches the contract.
             if (isContractValid(stack, entity)) {
@@ -59,11 +58,9 @@ public class PetContract extends Item {
                 this.transferOwnership(user, (TameableEntity) entity);
                 stack.decrement(1);
                 entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.0F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
-                return ActionResult.SUCCESS;
             } else {
                 //If it doesn't, inform the player of their mistake.
                 if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.contract_invalid"), true); }
-                return ActionResult.PASS;
             }
         } else {
             //If contract is not filled, check if target is owned by the player.
@@ -71,13 +68,13 @@ public class PetContract extends Item {
                 //If the target is owned by the player, fill the contract.
                 this.fillContract(stack, user, (TameableEntity) entity);
                 entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.0F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
-                return ActionResult.SUCCESS;
             } else {
                 //If the target is not owned by the player, inform them of their mistake.
                 if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.contract_fail"), true); }
-                return ActionResult.PASS;
             }
         }
+        //Return SUCCESS regardless of the outcome, to prevent making wolves sit etc.
+        return ActionResult.SUCCESS;
     }
 
     public void fillContract(ItemStack stack, PlayerEntity player, TameableEntity entity) {
