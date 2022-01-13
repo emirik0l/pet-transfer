@@ -13,6 +13,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
@@ -36,9 +37,9 @@ public class PetContract extends Item {
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
         if (this.isContractFilled(stack)) {
-            Text petText = new TranslatableText("text.transferpet.tooltip_pet").append(this.getPetName(stack));
+            Text petText = new TranslatableText("text.transferpet.tooltip_pet").formatted(Formatting.DARK_GRAY).append(this.getPetName(stack));
             tooltip.add(petText);
-            Text ownerText = new TranslatableText("text.transferpet.tooltip_owner").append(this.getOwnerName(stack));
+            Text ownerText = new TranslatableText("text.transferpet.tooltip_owner").formatted(Formatting.DARK_GRAY).append(this.getOwnerName(stack));
             tooltip.add(ownerText);
         }
     }
