@@ -4,7 +4,8 @@
   "package": "net.emirikol.transferpet.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "AnimalEntityMixin"
+    "AnimalEntityMixin",
+    "MobEntityMixin"
   ],
   "client": [],
   "injectors": {
