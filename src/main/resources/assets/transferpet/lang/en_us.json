@@ -1,6 +1,7 @@
 {
   "item.transferpet.contract": "Blank Contract",
   "item.transferpet.filled_contract": "Contract of Ownership",
+  "item.transferpet.contract_creative": "Creative Contract",
   "text.transferpet.contract_fail": "You can't fill out a contract for this creature!",
   "text.transferpet.contract_invalid": "The contract is not valid for this creature!",
   "text.transferpet.same_owner": "You cannot use a contract for a pet you already own!",
