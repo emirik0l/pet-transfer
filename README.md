@@ -16,8 +16,8 @@ Redeeming a contract on someone else's pet to transfer ownership:
 
 ## Credits
 
-One texture is adapted from the excellent Malcolm Riley's unused-textures repository, namely:
+One texture is adapted from the excellent Malcolm Riley's [unused-textures](https://github.com/malcolmriley/unused-textures) repository, namely:
 
 - The "part_paper_gilded" texture.
 
-These assets are licensed under CC BY 4.0.
+These assets are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
