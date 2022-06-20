@@ -2,7 +2,7 @@ package net.emirikol.transferpet.item;
 
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.HorseBaseEntity;
+import net.minecraft.entity.passive.HorseEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -12,7 +12,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -29,7 +28,7 @@ public class PetContract extends Item {
     @Override
     public Text getName(ItemStack stack) {
         if (this.isContractFilled(stack)) {
-            return new TranslatableText("item.transferpet.filled_contract");
+            return Text.translatable("item.transferpet.filled_contract");
         } else {
             return super.getName(stack);
         }
@@ -38,9 +37,9 @@ public class PetContract extends Item {
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
         if (this.isContractFilled(stack)) {
-            Text petText = new TranslatableText("text.transferpet.tooltip_pet").formatted(Formatting.DARK_GRAY).append(this.getContractPetName(stack));
+            Text petText = Text.translatable("text.transferpet.tooltip_pet").formatted(Formatting.DARK_GRAY).append(this.getContractPetName(stack));
             tooltip.add(petText);
-            Text ownerText = new TranslatableText("text.transferpet.tooltip_owner").formatted(Formatting.DARK_GRAY).append(this.getContractOwnerName(stack));
+            Text ownerText = Text.translatable("text.transferpet.tooltip_owner").formatted(Formatting.DARK_GRAY).append(this.getContractOwnerName(stack));
             tooltip.add(ownerText);
         }
     }
@@ -51,7 +50,7 @@ public class PetContract extends Item {
         if (this.isContractFilled(stack)) {
             //Check that the pet does not already belong to the user.
             if (this.isTargetOwned(user, entity)) {
-                if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.same_owner"), true); }
+                if (!user.getWorld().isClient) { user.sendMessage(Text.translatable("text.transferpet.same_owner"), true); }
                 return ActionResult.SUCCESS;
             }
             //Check if the target matches the contract.
@@ -62,7 +61,7 @@ public class PetContract extends Item {
                 entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.5F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
             } else {
                 //If it doesn't, inform the player of their mistake.
-                if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.contract_invalid"), true); }
+                if (!user.getWorld().isClient) { user.sendMessage(Text.translatable("text.transferpet.contract_invalid"), true); }
             }
         } else {
             //If contract is not filled, check if target is owned by the player.
@@ -72,7 +71,7 @@ public class PetContract extends Item {
                 entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.5F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
             } else {
                 //If the target is not owned by the player, inform them of their mistake.
-                if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.contract_fail"), true); }
+                if (!user.getWorld().isClient) { user.sendMessage(Text.translatable("text.transferpet.contract_fail"), true); }
             }
         }
         //Return SUCCESS regardless of the outcome, to prevent making wolves sit etc.
@@ -97,10 +96,10 @@ public class PetContract extends Item {
         String entityName = entity.getDisplayName().getString();
         LivingEntity oldOwner = this.getEntityOwner(entity);
         if (oldOwner instanceof PlayerEntity && !oldOwner.world.isClient) {
-            ((PlayerEntity) oldOwner).sendMessage(new TranslatableText("text.transferpet.message_old_owner", entityName, playerName), false);
+            ((PlayerEntity) oldOwner).sendMessage(Text.translatable("text.transferpet.message_old_owner", entityName, playerName), false);
         }
         if (!player.world.isClient) {
-            player.sendMessage(new TranslatableText("text.transferpet.message_new_owner", entityName), false);
+            player.sendMessage(Text.translatable("text.transferpet.message_new_owner", entityName), false);
         }
         this.setEntityOwner(entity, player);
     }
@@ -149,13 +148,13 @@ public class PetContract extends Item {
 
     public boolean isValidEntity(LivingEntity entity) {
         //Entity must be either TameableEntity or extend HorseBaseEntity, and it must have an owner.
-        return (entity instanceof TameableEntity || entity instanceof HorseBaseEntity) && (this.getEntityOwnerUUID(entity) != null);
+        return (entity instanceof TameableEntity || entity instanceof HorseEntity) && (this.getEntityOwnerUUID(entity) != null);
     }
 
     public LivingEntity getEntityOwner(LivingEntity entity) {
         if (entity instanceof TameableEntity) { return ((TameableEntity) entity).getOwner(); }
-        if (entity instanceof HorseBaseEntity) {
-            UUID ownerUUID = ((HorseBaseEntity) entity).getOwnerUuid();
+        if (entity instanceof HorseEntity) {
+            UUID ownerUUID = ((HorseEntity) entity).getOwnerUuid();
             return ownerUUID == null ? null : entity.world.getPlayerByUuid(ownerUUID);
         }
         return null;
@@ -163,7 +162,7 @@ public class PetContract extends Item {
 
     public UUID getEntityOwnerUUID(LivingEntity entity) {
         if (entity instanceof TameableEntity) { return ((TameableEntity) entity).getOwnerUuid(); }
-        if (entity instanceof HorseBaseEntity) { return ((HorseBaseEntity) entity).getOwnerUuid(); }
+        if (entity instanceof HorseEntity) { return ((HorseEntity) entity).getOwnerUuid(); }
         return null;
     }
 
@@ -175,7 +174,6 @@ public class PetContract extends Item {
 
     public void setEntityOwner(LivingEntity entity, PlayerEntity player) {
         if (entity instanceof TameableEntity) { ((TameableEntity) entity).setOwner(player); }
-        if (entity instanceof HorseBaseEntity) { ((HorseBaseEntity) entity).bondWithPlayer(player); }
+        if (entity instanceof HorseEntity) { ((HorseEntity) entity).bondWithPlayer(player); }
     }
 }
-
