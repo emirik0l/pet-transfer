@@ -2,10 +2,12 @@ package net.emirikol.transferpet;
 
 import net.emirikol.transferpet.item.CreativeContract;
 import net.emirikol.transferpet.item.PetContract;
+import net.emirikol.transferpet.component.ContractComponent;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
+import net.minecraft.component.ComponentType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
@@ -20,6 +22,8 @@ public class PetTransfer implements ModInitializer {
 	
 	public static PetContract PET_CONTRACT;
 	public static CreativeContract CREATIVE_CONTRACT;
+	
+	public static ComponentType<ContractComponent> CONTRACT_COMPONENT;
 
 	@Override
 	public void onInitialize() {
@@ -42,5 +46,11 @@ public class PetTransfer implements ModInitializer {
 		//Register contract.
 		Registry.register(Registries.ITEM, contract_id, PET_CONTRACT);
 		Registry.register(Registries.ITEM, contract_creative_id, CREATIVE_CONTRACT);
+		
+		// Instantiate component.
+		CONTRACT_COMPONENT = ComponentType.<ContractComponent>builder().codec(ContractComponent.CODEC).build();
+		
+		// Register component.
+		Registry.register(Registries.DATA_COMPONENT_TYPE, "transferpet:contract_component", CONTRACT_COMPONENT);
 	}
 }
