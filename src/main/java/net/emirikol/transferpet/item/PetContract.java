@@ -1,6 +1,5 @@
 package net.emirikol.transferpet.item;
 
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.HorseEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -8,7 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -35,7 +34,7 @@ public class PetContract extends Item {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         if (this.isContractFilled(stack)) {
             Text petText = Text.translatable("text.transferpet.tooltip_pet").formatted(Formatting.DARK_GRAY).append(this.getContractPetName(stack));
             tooltip.add(petText);
@@ -58,7 +57,7 @@ public class PetContract extends Item {
                 //If it does, perform the transfer of ownership.
                 this.transferOwnership(user, entity);
                 stack.decrement(1);
-                entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.5F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
+                entity.getWorld().playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.5F, 1.0F + (entity.getWorld().random.nextFloat() - entity.getWorld().random.nextFloat()) * 0.4F);
             } else {
                 //If it doesn't, inform the player of their mistake.
                 if (!user.getWorld().isClient) { user.sendMessage(Text.translatable("text.transferpet.contract_invalid"), true); }
@@ -68,7 +67,7 @@ public class PetContract extends Item {
             if (this.isTargetOwned(user, entity) || this.canSteal(entity)) {
                 //If the target is owned by the player, fill the contract.
                 this.fillContract(stack, user, entity);
-                entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.5F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
+                entity.getWorld().playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.5F, 1.0F + (entity.getWorld().random.nextFloat() - entity.getWorld().random.nextFloat()) * 0.4F);
             } else {
                 //If the target is not owned by the player, inform them of their mistake.
                 if (!user.getWorld().isClient) { user.sendMessage(Text.translatable("text.transferpet.contract_fail"), true); }
@@ -95,10 +94,10 @@ public class PetContract extends Item {
         String playerName = player.getDisplayName().getString();
         String entityName = entity.getDisplayName().getString();
         LivingEntity oldOwner = this.getEntityOwner(entity);
-        if (oldOwner instanceof PlayerEntity && !oldOwner.world.isClient) {
+        if (oldOwner instanceof PlayerEntity && !oldOwner.getWorld().isClient) {
             ((PlayerEntity) oldOwner).sendMessage(Text.translatable("text.transferpet.message_old_owner", entityName, playerName), false);
         }
-        if (!player.world.isClient) {
+        if (!player.getWorld().isClient) {
             player.sendMessage(Text.translatable("text.transferpet.message_new_owner", entityName), false);
         }
         this.setEntityOwner(entity, player);
@@ -155,7 +154,7 @@ public class PetContract extends Item {
         if (entity instanceof TameableEntity) { return ((TameableEntity) entity).getOwner(); }
         if (entity instanceof HorseEntity) {
             UUID ownerUUID = ((HorseEntity) entity).getOwnerUuid();
-            return ownerUUID == null ? null : entity.world.getPlayerByUuid(ownerUUID);
+            return ownerUUID == null ? null : entity.getWorld().getPlayerByUuid(ownerUUID);
         }
         return null;
     }
