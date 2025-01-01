@@ -1,17 +1,12 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "minecraft:paper"
-    },
-    {
-      "item": "minecraft:feather"
-    },
-    {
-      "item": "minecraft:glow_ink_sac"
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+		"minecraft:paper",
+		"minecraft:feather",
+		"minecraft:glow_ink_sac"
+    ],
+    "result": {
+        "id": "transferpet:contract",
+        "count": 1
     }
-  ],
-  "result": {
-    "item": "transferpet:contract"
-  }
 }
