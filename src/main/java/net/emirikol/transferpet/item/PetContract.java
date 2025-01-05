@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -16,6 +17,15 @@ import java.util.UUID;
 public class PetContract extends Item {
     public PetContract(Settings settings) {
         super(settings);
+    }
+
+    @Override
+    public Text getName(ItemStack stack) {
+        if (this.isContractFilled(stack)) {
+            return new TranslatableText("item.transferpet.filled_contract");
+        } else {
+            return super.getName(stack);
+        }
     }
 
     @Override
