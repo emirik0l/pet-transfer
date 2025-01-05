@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "transferpet",
   "version": "${version}",
 
   "name": "Pet Transfer",
@@ -14,12 +14,12 @@
   },
 
   "license": "LGPL2.1",
-  "icon": "assets/transfer/icon.png",
+  "icon": "assets/transferpet/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.emirikol.transfer.PetTransfer"
+      "net.emirikol.transferpet.PetTransfer"
     ]
   },
   "mixins": [],
