@@ -23,7 +23,7 @@ public class PetContract extends Item {
         //Check if contract is filled.
         if (this.isContractFilled(stack)) {
             //If the contract is filled, check if the target matches the contract.
-            if (entity instanceof TameableEntity && this.getPet(stack) == entity.getUuid()) {
+            if (entity instanceof TameableEntity && this.getPet(stack).equals(entity.getUuid())) {
                 //If it does, check that the pet's owner and current user are not the same person.
                 TameableEntity tameableEntity = (TameableEntity) entity;
                 if (tameableEntity.getOwner() != null && tameableEntity.getOwner().getUuid() != user.getUuid()) {
