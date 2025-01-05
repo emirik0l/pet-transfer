@@ -7,6 +7,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -40,6 +42,7 @@ public class PetContract extends Item {
                     //If they're not, perform the transfer of ownership.
                     this.transferOwnership(user, (TameableEntity) entity);
                     stack.decrement(1);
+                    entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.0F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
                     return ActionResult.SUCCESS;
                 } else {
                     //If they are, inform the player of their mistake.
@@ -56,6 +59,7 @@ public class PetContract extends Item {
             if (entity instanceof TameableEntity && ((TameableEntity) entity).getOwner() == user) {
                 //If the target is owned by the player, fill the contract.
                 this.fillContract(stack, user, (TameableEntity) entity);
+                entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.0F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
                 return ActionResult.SUCCESS;
             } else {
                 //If the target is not owned by the player, inform them of their mistake.
