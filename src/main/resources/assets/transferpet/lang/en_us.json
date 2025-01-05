@@ -1,4 +1,6 @@
 {
   "item.transferpet.contract": "Blank Contract",
-  "text.transferpet.contract_fail": "You can't fill out a contract for this creature!"
+  "text.transferpet.contract_fail": "You can't fill out a contract for this creature!",
+  "text.transferpet.wrong_pet": "This is the wrong contract for this creature!",
+  "text.transferpet.same_owner": "You cannot use a contract for a pet you already own!"
 }
