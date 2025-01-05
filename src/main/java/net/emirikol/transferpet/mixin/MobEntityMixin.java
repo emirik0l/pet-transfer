@@ -1,6 +1,5 @@
 package net.emirikol.transferpet.mixin;
 
-import net.emirikol.transferpet.PetTransfer;
 import net.emirikol.transferpet.item.PetContract;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
