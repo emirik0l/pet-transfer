@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -48,29 +47,26 @@ public class PetContract extends Item {
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
         //Check if contract is filled.
         if (this.isContractFilled(stack)) {
-            //If the contract is filled, check if the target matches the contract.
-            if (entity instanceof TameableEntity && this.getPet(stack).equals(entity.getUuid())) {
-                //If it does, check that the pet's owner and current user are not the same person.
-                TameableEntity tameableEntity = (TameableEntity) entity;
-                if (tameableEntity.getOwnerUuid() != user.getUuid()) {
-                    //If they're not, perform the transfer of ownership.
-                    this.transferOwnership(user, (TameableEntity) entity);
-                    stack.decrement(1);
-                    entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.0F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
-                    return ActionResult.SUCCESS;
-                } else {
-                    //If they are, inform the player of their mistake.
-                    if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.same_owner"), true); }
-                    return ActionResult.PASS;
-                }
+            //Check that the pet does not already belong to the user.
+            if (this.isTargetOwned(user, entity)) {
+                if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.same_owner"), true); }
+                return ActionResult.PASS;
+            }
+            //Check if the target matches the contract.
+            if (isContractValid(stack, entity)) {
+                //If it does, perform the transfer of ownership.
+                this.transferOwnership(user, (TameableEntity) entity);
+                stack.decrement(1);
+                entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.0F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
+                return ActionResult.SUCCESS;
             } else {
                 //If it doesn't, inform the player of their mistake.
-                if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.wrong_pet"), true); }
+                if (!user.getWorld().isClient) { user.sendMessage(new TranslatableText("text.transferpet.contract_invalid"), true); }
                 return ActionResult.PASS;
             }
         } else {
             //If contract is not filled, check if target is owned by the player.
-            if (entity instanceof TameableEntity && ((TameableEntity) entity).getOwner() == user) {
+            if (this.isTargetOwned(user, entity)) {
                 //If the target is owned by the player, fill the contract.
                 this.fillContract(stack, user, (TameableEntity) entity);
                 entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.0F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
@@ -104,6 +100,18 @@ public class PetContract extends Item {
         return !stack.getOrCreateNbt().getString("contract_uuid").isEmpty();
     }
 
+    public boolean isTargetOwned(PlayerEntity player, LivingEntity entity) {
+        if (!(entity instanceof TameableEntity)) return false;
+        TameableEntity tameableEntity = (TameableEntity) entity;
+        return tameableEntity.getOwner() == player;
+    }
+
+    public boolean isContractValid(ItemStack stack, LivingEntity entity) {
+        if (!(entity instanceof TameableEntity)) return false;
+        TameableEntity tameableEntity = (TameableEntity) entity;
+        return (tameableEntity.getUuid().equals(this.getPet(stack))) && (tameableEntity.getOwnerUuid().equals(this.getOwner(stack)));
+    }
+
     public UUID getPet(ItemStack stack) {
         NbtCompound nbt = stack.getOrCreateNbt();
         return UUID.fromString(nbt.getString("contract_uuid"));
@@ -112,6 +120,11 @@ public class PetContract extends Item {
     public String getPetName(ItemStack stack) {
         NbtCompound nbt = stack.getOrCreateNbt();
         return nbt.getString("contract_name");
+    }
+
+    public UUID getOwner(ItemStack stack) {
+        NbtCompound nbt = stack.getOrCreateNbt();
+        return UUID.fromString(nbt.getString("contract_owner_uuid"));
     }
 
     public String getOwnerName(ItemStack stack) {
