@@ -1,6 +1,6 @@
 # Pet Transfer
 
-A simple mod that lets you create contracts that can transfer ownership of pets and other tameable creatures.
+A simple mod for Fabric that lets you create contracts that can transfer ownership of pets and other tameable creatures. No Forge port planned.
 
 Creating a blank contract:
 
