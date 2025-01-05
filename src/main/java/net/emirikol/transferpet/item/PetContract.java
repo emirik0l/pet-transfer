@@ -92,6 +92,15 @@ public class PetContract extends Item {
     }
 
     public void transferOwnership(PlayerEntity player, TameableEntity entity) {
+        String playerName = player.getDisplayName().getString();
+        String entityName = entity.getDisplayName().getString();
+        LivingEntity oldOwner = entity.getOwner();
+        if (oldOwner instanceof PlayerEntity && !oldOwner.world.isClient) {
+            ((PlayerEntity) oldOwner).sendMessage(new TranslatableText("text.transferpet.message_old_owner", entityName, playerName), false);
+        }
+        if (!player.world.isClient) {
+            player.sendMessage(new TranslatableText("text.transferpet.message_new_owner", entityName), false);
+        }
         entity.setOwner(player);
     }
 

@@ -5,5 +5,7 @@
   "text.transferpet.contract_invalid": "The contract is not valid for this creature!",
   "text.transferpet.same_owner": "You cannot use a contract for a pet you already own!",
   "text.transferpet.tooltip_pet": "Pet Name: ",
-  "text.transferpet.tooltip_owner": "Original Owner: "
+  "text.transferpet.tooltip_owner": "Original Owner: ",
+  "text.transferpet.message_old_owner": "You have transferred ownership of %s to %s.",
+  "text.transferpet.message_new_owner": "Ownership of %s has been transferred to you."
 }
