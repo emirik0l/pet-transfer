@@ -17,6 +17,6 @@ public class PetTransfer implements ModInitializer {
 		petContractSettings.group(ItemGroup.MISC);
 		PET_CONTRACT = new PetContract(petContractSettings);
 		//Register contract.
-		Registry.register(Registry.ITEM, "transfer:contract", PET_CONTRACT);
+		Registry.register(Registry.ITEM, "transferpet:contract", PET_CONTRACT);
 	}
 }
