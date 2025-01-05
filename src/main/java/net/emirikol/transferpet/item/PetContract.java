@@ -1,5 +1,10 @@
 package net.emirikol.transferpet.item;
 
+import net.emirikol.transferpet.PetTransfer;
+import net.emirikol.transferpet.component.ContractComponent;
+
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.HorseEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -80,12 +85,16 @@ public class PetContract extends Item {
     public void fillContract(ItemStack stack, PlayerEntity player, LivingEntity entity) {
         ItemStack filled = new ItemStack(this, 1);
         stack.decrement(1);
-        NbtCompound nbt = filled.getOrCreateNbt();
-        nbt.putInt("CustomModelData", 1);
-        nbt.putString("contract_uuid", entity.getUuidAsString());
-        nbt.putString("contract_name", entity.getDisplayName().getString());
-        nbt.putString("contract_owner_uuid", this.getEntityOwnerUUID(entity).toString());
-        nbt.putString("contract_owner_name", this.getEntityOwnerName(entity));
+		
+		String entityName = entity.getDisplayName().getString();
+		String entityUUID = entity.getUuidAsString();
+		String ownerName = this.getEntityOwnerName(entity);
+		String ownerUUID = this.getEntityOwnerUUID(entity).toString();
+		ContractComponent contractData = new ContractComponent(entityName, entityUUID, ownerName, ownerUUID);
+		filled.set(PetTransfer.CONTRACT_COMPONENT, contractData);
+		
+		filled.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(), List.of(), List.of("filled"), List.of()));
+		
         PlayerInventory inventory = player.getInventory();
         inventory.offerOrDrop(filled);
     }
@@ -108,7 +117,7 @@ public class PetContract extends Item {
     }
 
     public boolean isContractFilled(ItemStack stack) {
-        return !stack.getOrCreateNbt().getString("contract_uuid").isEmpty();
+		return stack.contains(PetTransfer.CONTRACT_COMPONENT);
     }
 
     public boolean isTargetOwned(PlayerEntity player, LivingEntity entity) {
@@ -124,23 +133,23 @@ public class PetContract extends Item {
     }
 
     public UUID getContractPet(ItemStack stack) {
-        NbtCompound nbt = stack.getOrCreateNbt();
-        return UUID.fromString(nbt.getString("contract_uuid"));
+		ContractComponent contractData = stack.get(PetTransfer.CONTRACT_COMPONENT);
+        return UUID.fromString(contractData.petUUID());
     }
 
     public String getContractPetName(ItemStack stack) {
-        NbtCompound nbt = stack.getOrCreateNbt();
-        return nbt.getString("contract_name");
+		ContractComponent contractData = stack.get(PetTransfer.CONTRACT_COMPONENT);
+        return contractData.petName();
     }
 
     public UUID getContractOwner(ItemStack stack) {
-        NbtCompound nbt = stack.getOrCreateNbt();
-        return UUID.fromString(nbt.getString("contract_owner_uuid"));
+		ContractComponent contractData = stack.get(PetTransfer.CONTRACT_COMPONENT);
+        return UUID.fromString(contractData.ownerUUID());
     }
 
     public String getContractOwnerName(ItemStack stack) {
-        NbtCompound nbt = stack.getOrCreateNbt();
-        return nbt.getString("contract_owner_name");
+		ContractComponent contractData = stack.get(PetTransfer.CONTRACT_COMPONENT);
+        return contractData.ownerName();
     }
 
     //Helper methods because for some reason horses don't extend TameableEntity.
