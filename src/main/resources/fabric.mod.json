@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Pet Transfer",
-  "description": "A mod that lets you create "contracts" that transfer ownership of pets and other tameables.",
+  "description": "A mod that lets you create contracts that transfer ownership of pets and other tameables.",
   "authors": [
     "Emirikol"
   ],
