@@ -15,8 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import javax.swing.*;
-
 @Mixin(AnimalEntity.class)
 public abstract class AnimalEntityMixin extends PassiveEntity {
     public AnimalEntityMixin(EntityType<? extends PassiveEntity> type, World world) {
