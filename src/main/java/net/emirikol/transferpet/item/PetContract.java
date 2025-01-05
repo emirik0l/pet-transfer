@@ -111,7 +111,7 @@ public class PetContract extends Item {
 
     public boolean isTargetOwned(PlayerEntity player, LivingEntity entity) {
         if (!this.isValidEntity(entity)) return false;
-        return this.getEntityOwnerUUID(entity) != null && this.getEntityOwnerUUID(entity).equals(player.getUuid());
+        return this.getEntityOwnerUUID(entity).equals(player.getUuid());
     }
 
     public boolean isContractValid(ItemStack stack, LivingEntity entity) {
@@ -144,7 +144,8 @@ public class PetContract extends Item {
     //Helper methods because for some reason horses don't extend TameableEntity.
 
     public boolean isValidEntity(LivingEntity entity) {
-        return entity instanceof TameableEntity || entity instanceof HorseBaseEntity;
+        //Entity must be either TameableEntity or extend HorseBaseEntity, and it must have an owner.
+        return (entity instanceof TameableEntity || entity instanceof HorseBaseEntity) && (this.getEntityOwnerUUID(entity) != null);
     }
 
     public LivingEntity getEntityOwner(LivingEntity entity) {
