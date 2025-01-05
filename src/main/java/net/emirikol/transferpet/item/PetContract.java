@@ -111,7 +111,7 @@ public class PetContract extends Item {
 
     public boolean isTargetOwned(PlayerEntity player, LivingEntity entity) {
         if (!this.isValidEntity(entity)) return false;
-        return this.getEntityOwnerUUID(entity) == player.getUuid();
+        return this.getEntityOwnerUUID(entity).equals(player.getUuid());
     }
 
     public boolean isContractValid(ItemStack stack, LivingEntity entity) {
