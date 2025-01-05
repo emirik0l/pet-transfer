@@ -66,7 +66,7 @@ public class PetContract extends Item {
             }
         } else {
             //If contract is not filled, check if target is owned by the player.
-            if (this.isTargetOwned(user, entity)) {
+            if (this.isTargetOwned(user, entity) || this.canSteal(entity)) {
                 //If the target is owned by the player, fill the contract.
                 this.fillContract(stack, user, entity);
                 entity.world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.5F, 1.0F + (entity.world.random.nextFloat() - entity.world.random.nextFloat()) * 0.4F);
@@ -86,8 +86,8 @@ public class PetContract extends Item {
         nbt.putInt("CustomModelData", 1);
         nbt.putString("contract_uuid", entity.getUuidAsString());
         nbt.putString("contract_name", entity.getDisplayName().getString());
-        nbt.putString("contract_owner_uuid", player.getUuidAsString());
-        nbt.putString("contract_owner_name", player.getDisplayName().getString());
+        nbt.putString("contract_owner_uuid", this.getEntityOwnerUUID(entity).toString());
+        nbt.putString("contract_owner_name", this.getEntityOwnerName(entity));
         PlayerInventory inventory = player.getInventory();
         inventory.offerOrDrop(filled);
     }
@@ -103,6 +103,10 @@ public class PetContract extends Item {
             player.sendMessage(new TranslatableText("text.transferpet.message_new_owner", entityName), false);
         }
         this.setEntityOwner(entity, player);
+    }
+
+    public boolean canSteal(LivingEntity entity) {
+        return false;
     }
 
     public boolean isContractFilled(ItemStack stack) {
@@ -161,6 +165,12 @@ public class PetContract extends Item {
         if (entity instanceof TameableEntity) { return ((TameableEntity) entity).getOwnerUuid(); }
         if (entity instanceof HorseBaseEntity) { return ((HorseBaseEntity) entity).getOwnerUuid(); }
         return null;
+    }
+
+    public String getEntityOwnerName(LivingEntity entity) {
+        LivingEntity owner = this.getEntityOwner(entity);
+        if (owner == null) { return "???"; }
+        return owner.getDisplayName().getString();
     }
 
     public void setEntityOwner(LivingEntity entity, PlayerEntity player) {
